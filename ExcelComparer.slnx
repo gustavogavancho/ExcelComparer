@@ -10,5 +10,7 @@
   <Folder Name="/src/UI/">
     <Project Path="ExcelComparer.WPFUI/ExcelComparer.WPFUI.csproj" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="ExcelComparer.Application.UnitTests/ExcelComparer.Application.UnitTests.csproj" Id="13c22116-6740-4a5d-96dc-067f6f6897cb" />
+  </Folder>
 </Solution>
