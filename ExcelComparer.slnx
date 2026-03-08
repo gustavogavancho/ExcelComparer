@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Core/">
+    <Project Path="ExcelComparer.Application/ExcelComparer.Application.csproj" />
+    <Project Path="ExcelComparer.Domain/ExcelComparer.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="ExcelComparer.Infrastracture/ExcelComparer.Infrastracture.csproj" />
+  </Folder>
+  <Folder Name="/src/UI/">
+    <Project Path="ExcelComparer.WPFUI/ExcelComparer.WPFUI.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>
