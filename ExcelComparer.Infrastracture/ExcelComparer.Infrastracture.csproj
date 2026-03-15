@@ -7,7 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ExcelComparer.Application\ExcelComparer.Application.csproj" />
+    <ProjectReference Include="..\ExcelComparer.Domain\ExcelComparer.Domain.csproj" />
   </ItemGroup>
 
 </Project>

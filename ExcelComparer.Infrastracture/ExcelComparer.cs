@@ -2,9 +2,8 @@
 using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelComparer.Application.Contracts;
-using ExcelComparer.Domain;
+using ExcelComparer.Application.Models;
 using ExcelComparer.Domain.Entities;
-using ExcelComparer.Domain.Enums;
 using System.Globalization;
 using System.Text;
 
@@ -12,7 +11,7 @@ namespace ExcelComparer.Infrastracture;
 
 public class ExcelComparer : IExcelComparer
 {
-    public ValueTask<Dictionary<int, string?>> BuildNumberFormatCache(WorkbookPart wbPart)
+    private static ValueTask<Dictionary<int, string?>> BuildNumberFormatCache(WorkbookPart wbPart)
     {
         var result = new Dictionary<int, string?>();
         var styles = wbPart.WorkbookStylesPart?.Stylesheet;
@@ -39,7 +38,7 @@ public class ExcelComparer : IExcelComparer
         return new ValueTask<Dictionary<int, string?>>(result);
     }
 
-    public string ColumnIndexToName(int index)
+    private static string ColumnIndexToName(int index)
     {
         var sb = new StringBuilder();
         while (index > 0)
@@ -51,7 +50,7 @@ public class ExcelComparer : IExcelComparer
         return sb.ToString();
     }
 
-    public int ColumnNameToIndex(string name)
+    private static int ColumnNameToIndex(string name)
     {
         int result = 0;
         foreach (var ch in name.ToUpperInvariant())
@@ -139,7 +138,7 @@ public class ExcelComparer : IExcelComparer
         return result;
     }
 
-    public ValueTask DiffCells(string sheetName, Dictionary<string, CellInfo> a, Dictionary<string, CellInfo> b, ComparisonResult result, ComparisonOptions options, WorkbookPart wbA, WorkbookPart wbB)
+    private ValueTask DiffCells(string sheetName, Dictionary<string, CellInfo> a, Dictionary<string, CellInfo> b, ComparisonResult result, ComparisonOptions options, WorkbookPart wbA, WorkbookPart wbB)
     {
         // Avoid sorting large key sets. Use two-pass iteration with a HashSet to de-duplicate in O(n).
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -217,7 +216,7 @@ public class ExcelComparer : IExcelComparer
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask DiffConditionalFormatting(Worksheet wsA, Worksheet wsB, string sheetName, ComparisonResult result)
+    private static ValueTask DiffConditionalFormatting(Worksheet wsA, Worksheet wsB, string sheetName, ComparisonResult result)
     {
         var cfA = wsA.Descendants<ConditionalFormatting>().Select(cf => cf.InnerText).ToList();
         var cfB = wsB.Descendants<ConditionalFormatting>().Select(cf => cf.InnerText).ToList();
@@ -230,7 +229,7 @@ public class ExcelComparer : IExcelComparer
         return ValueTask.CompletedTask;
     }
 
-    public void DiffDataValidations(Worksheet wsA, Worksheet wsB, string sheetName, ComparisonResult result)
+    private static void DiffDataValidations(Worksheet wsA, Worksheet wsB, string sheetName, ComparisonResult result)
     {
         var valsA = GetDataValidationSummaryFromWorksheet(wsA);
         var valsB = GetDataValidationSummaryFromWorksheet(wsB);
@@ -240,7 +239,7 @@ public class ExcelComparer : IExcelComparer
         }
     }
 
-    public ValueTask DiffHiddenRowsCols(Worksheet wsA, Worksheet wsB, string sheetName, ComparisonResult result)
+    private static ValueTask DiffHiddenRowsCols(Worksheet wsA, Worksheet wsB, string sheetName, ComparisonResult result)
     {
         var colsA = wsA.Elements<Columns>().FirstOrDefault()?.Elements<Column>().Where(c => c.Hidden != null && c.Hidden.Value).Select(c => $"{c.Min}-{c.Max}").OrderBy(x => x).ToList() ?? new();
         var colsB = wsB.Elements<Columns>().FirstOrDefault()?.Elements<Column>().Where(c => c.Hidden != null && c.Hidden.Value).Select(c => $"{c.Min}-{c.Max}").OrderBy(x => x).ToList() ?? new();
@@ -255,7 +254,7 @@ public class ExcelComparer : IExcelComparer
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask DiffSheetOrder(SpreadsheetDocument docA, SpreadsheetDocument docB, ComparisonResult result)
+    private static ValueTask DiffSheetOrder(SpreadsheetDocument docA, SpreadsheetDocument docB, ComparisonResult result)
     {
         var orderA = docA.WorkbookPart!.Workbook!.Sheets!.OfType<Sheet>().Select(s => s.Name!.Value!).ToList();
         var orderB = docB.WorkbookPart!.Workbook!.Sheets!.OfType<Sheet>().Select(s => s.Name!.Value!).ToList();
@@ -276,7 +275,7 @@ public class ExcelComparer : IExcelComparer
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask DiffSheets(WorkbookInfo a, WorkbookInfo b, ComparisonResult result, ComparisonOptions options)
+    private static ValueTask DiffSheets(WorkbookInfo a, WorkbookInfo b, ComparisonResult result, ComparisonOptions options)
     {
         var names = a.SheetsByName.Keys.Union(b.SheetsByName.Keys, StringComparer.OrdinalIgnoreCase);
 
@@ -307,7 +306,7 @@ public class ExcelComparer : IExcelComparer
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask DiffUsedRange(Worksheet wsA, Worksheet wsB, string sheetName, ComparisonResult result)
+    private static ValueTask DiffUsedRange(Worksheet wsA, Worksheet wsB, string sheetName, ComparisonResult result)
     {
         var urA = GetUsedRangeFromWorksheet(wsA);
         var urB = GetUsedRangeFromWorksheet(wsB);
@@ -319,7 +318,7 @@ public class ExcelComparer : IExcelComparer
         return ValueTask.CompletedTask;
     }
 
-    public string GetDataValidationSummaryFromWorksheet(Worksheet ws)
+    private static string GetDataValidationSummaryFromWorksheet(Worksheet ws)
     {
         var dataValidations = ws.Descendants<DataValidation>()
             .Select(v => v.OuterXml)
@@ -328,7 +327,7 @@ public class ExcelComparer : IExcelComparer
         return string.Join("|", dataValidations);
     }
 
-    public string GetUsedRangeFromWorksheet(Worksheet ws)
+    private static string GetUsedRangeFromWorksheet(Worksheet ws)
     {
         var reference = ws.SheetDimension?.Reference?.Value;
         if (!string.IsNullOrWhiteSpace(reference))
@@ -379,7 +378,7 @@ public class ExcelComparer : IExcelComparer
         return $"{ColumnIndexToName(minCol)}{minRow}:{ColumnIndexToName(maxCol)}{maxRow}";
     }
 
-    public ValueTask ParseAddress(string addr, out int row, out int col)
+    private static ValueTask ParseAddress(string addr, out int row, out int col)
     {
         int i = 0;
         while (i < addr.Length && char.IsLetter(addr[i])) i++;
@@ -391,7 +390,7 @@ public class ExcelComparer : IExcelComparer
         return ValueTask.CompletedTask;
     }
 
-    public async ValueTask<Dictionary<string, CellInfo>> ReadCells(WorkbookPart wbPart, Worksheet ws, SharedStringTable? sst, ComparisonOptions options, Dictionary<int, string?>? nfCache)
+    private async ValueTask<Dictionary<string, CellInfo>> ReadCells(WorkbookPart wbPart, Worksheet ws, SharedStringTable? sst, ComparisonOptions options, Dictionary<int, string?>? nfCache)
     {
         var sheetData = ws.Elements<SheetData>().FirstOrDefault();
 
@@ -440,7 +439,7 @@ public class ExcelComparer : IExcelComparer
         return dict;
     }
 
-    public ValueTask<string?> ReadCellValueAsText(Cell cell, SharedStringTable? sst)
+    private static ValueTask<string?> ReadCellValueAsText(Cell cell, SharedStringTable? sst)
     {
         if (cell.CellValue is null)
         {
@@ -465,7 +464,7 @@ public class ExcelComparer : IExcelComparer
         return new ValueTask<string?>(raw);
     }
 
-    public WorkbookInfo ReadWorkbook(SpreadsheetDocument doc)
+    private static WorkbookInfo ReadWorkbook(SpreadsheetDocument doc)
     {
         var wbPart = doc.WorkbookPart ?? throw new InvalidOperationException("WorkbookPart no encontrado.");
         var wb = wbPart.Workbook ?? throw new InvalidOperationException("Workbook no encontrado.");
@@ -491,7 +490,7 @@ public class ExcelComparer : IExcelComparer
         return info;
     }
 
-    public string? ResolveNumberFormatCode(WorkbookPart wbPart, uint? styleIndex)
+    private static string? ResolveNumberFormatCode(WorkbookPart wbPart, uint? styleIndex)
     {
         if (styleIndex is null) return null;
         var styles = wbPart.WorkbookStylesPart?.Stylesheet;
@@ -510,7 +509,7 @@ public class ExcelComparer : IExcelComparer
         return nfid.ToString(CultureInfo.InvariantCulture);
     }
 
-    public string? Summarize(CellInfo? c, ComparisonOptions options)
+    private static string? Summarize(CellInfo? c, ComparisonOptions options)
     {
         if (c is null) return null;
         var sb = new StringBuilder();

@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ExcelComparer.Application.Contracts;
+using ExcelComparer.Infrastracture;
+using ExcelComparer.WPFUI.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Windows;
 
@@ -19,6 +22,8 @@ public partial class App : System.Windows.Application
         return Host.CreateDefaultBuilder(args)
             .ConfigureServices(services =>
             {
+                services.AddInfrastructure();
+                services.AddSingleton<MainViewModel>();
                 services.AddSingleton<MainWindow>();
             });
     }

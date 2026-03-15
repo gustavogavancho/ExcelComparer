@@ -1,13 +1,6 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using ExcelComparer.WPFUI.Models;
+using ExcelComparer.WPFUI.ViewModels;
 
 namespace ExcelComparer.WPFUI
 {
@@ -16,9 +9,18 @@ namespace ExcelComparer.WPFUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(MainViewModel viewModel)
         {
             InitializeComponent();
+            DataContext = viewModel;
+        }
+
+        private void TreeSummary_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SelectedSummaryItem = e.NewValue as SummaryTreeItem;
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ExcelComparer.WPFUI"
+        xmlns:models="clr-namespace:ExcelComparer.WPFUI.Models"
         mc:Ignorable="d"
         Title="Excel Diff (MVP)" Height="720" Width="1200" WindowStartupLocation="CenterScreen">
     <Grid Margin="12">
@@ -29,8 +29,8 @@
                         <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="TxtFileA" VerticalAlignment="Center" />
-                    <Button Grid.Column="2" Content="..." Width="34" Click="BtnBrowseA_Click"/>
+                    <TextBox VerticalAlignment="Center" Text="{Binding FileA, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Grid.Column="2" Content="..." Width="34" Command="{Binding BrowseFileACommand}"/>
                 </Grid>
             </GroupBox>
 
@@ -41,8 +41,8 @@
                         <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="TxtFileB" VerticalAlignment="Center" />
-                    <Button Grid.Column="2" Content="..." Width="34" Click="BtnBrowseB_Click"/>
+                    <TextBox VerticalAlignment="Center" Text="{Binding FileB, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Grid.Column="2" Content="..." Width="34" Command="{Binding BrowseFileBCommand}"/>
                 </Grid>
             </GroupBox>
         </Grid>
@@ -58,34 +58,46 @@
             <DockPanel Grid.Column="0">
                 <StackPanel DockPanel.Dock="Top" Orientation="Vertical" Margin="0,0,0,8">
                     <WrapPanel>
-                        <CheckBox x:Name="ChkCompareValues" Content="Valores" IsChecked="True" Margin="0,0,10,0"/>
-                        <CheckBox x:Name="ChkCompareFormulas" Content="Fórmulas" IsChecked="True" Margin="0,0,10,0"/>
-                        <CheckBox x:Name="ChkIncludeHiddenSheets" Content="Incluir hojas ocultas" IsChecked="True"/>
+                        <CheckBox Content="Valores" IsChecked="{Binding CompareValues}" Margin="0,0,10,0"/>
+                        <CheckBox Content="Fórmulas" IsChecked="{Binding CompareFormulas}" Margin="0,0,10,0"/>
+                        <CheckBox Content="Incluir hojas ocultas" IsChecked="{Binding IncludeHiddenSheets}"/>
                     </WrapPanel>
 
                     <WrapPanel Margin="0,8,0,0">
-                        <Button x:Name="BtnCompare" Content="Comparar" Width="110" Click="BtnCompare_Click"/>
-                        <Button x:Name="BtnCancel" Content="Cancelar" Width="110" Margin="8,0,0,0" IsEnabled="False" Click="BtnCancel_Click"/>
+                        <Button Content="Comparar" Width="110" Command="{Binding CompareCommand}"/>
+                        <Button Content="Cancelar" Width="110" Margin="8,0,0,0" Command="{Binding CancelCommand}"/>
                     </WrapPanel>
 
-                    <TextBlock x:Name="TxtStatus" Margin="0,8,0,0" Text="Listo."/>
-                    <ProgressBar x:Name="Prog" Height="16" Margin="0,4,0,0" Minimum="0" Maximum="100"/>
+                    <TextBlock Margin="0,8,0,0" Text="{Binding StatusText}"/>
+                    <ProgressBar Height="16" Margin="0,4,0,0" Minimum="0" Maximum="100" Value="{Binding ProgressValue}"/>
                 </StackPanel>
 
                 <GroupBox Header="Resumen" DockPanel.Dock="Bottom">
-                    <TreeView x:Name="TreeSummary" SelectedItemChanged="TreeSummary_SelectedItemChanged" />
+                    <TreeView ItemsSource="{Binding SummaryItems}" SelectedItemChanged="TreeSummary_SelectedItemChanged">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type models:SummaryTreeItem}" ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Header}"/>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem">
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded}"/>
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                    </TreeView>
                 </GroupBox>
             </DockPanel>
 
             <GroupBox Grid.Column="2" Header="Diferencias">
                 <DockPanel>
-                    <TextBox x:Name="TxtFilter" DockPanel.Dock="Top" Margin="6" Height="26"
-                             TextChanged="TxtFilter_TextChanged"/>
-                    <DataGrid x:Name="GridDiffs" Margin="6" AutoGenerateColumns="False" IsReadOnly="True"
+                    <TextBox DockPanel.Dock="Top" Margin="6" Height="26"
+                             Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
+                    <DataGrid Margin="6" AutoGenerateColumns="False" IsReadOnly="True"
                               CanUserAddRows="False" SelectionMode="Single"
                               GridLinesVisibility="Horizontal" HeadersVisibility="Column"
                               AlternatingRowBackground="#FFF5F5F5" AlternationCount="2"
-                              RowHeaderWidth="0">
+                               RowHeaderWidth="0"
+                               ItemsSource="{Binding DiffsView}">
                         <DataGrid.Resources>
                             <Style x:Key="WrapCell" TargetType="TextBlock">
                                 <Setter Property="TextWrapping" Value="Wrap"/>

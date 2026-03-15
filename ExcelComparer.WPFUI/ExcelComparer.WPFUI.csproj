@@ -20,12 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExcelComparer.Application\ExcelComparer.Application.csproj" />
     <ProjectReference Include="..\ExcelComparer.Infrastracture\ExcelComparer.Infrastracture.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="HostBuilders\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

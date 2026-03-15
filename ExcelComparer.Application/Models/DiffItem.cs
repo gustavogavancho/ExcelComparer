@@ -1,4 +1,4 @@
-﻿namespace ExcelComparer.Domain.Enums;
+namespace ExcelComparer.Application.Models;
 
 public sealed record DiffItem(
     string Sheet,
