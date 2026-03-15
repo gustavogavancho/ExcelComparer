@@ -1,4 +1,4 @@
-﻿namespace ExcelComparer.Domain;
+﻿namespace ExcelComparer.Domain.Entities;
 
 public sealed class ComparisonOptions
 {

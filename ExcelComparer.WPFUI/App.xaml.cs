@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace ExcelComparer.WPFUI;
 
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     private readonly IHost _host;
 

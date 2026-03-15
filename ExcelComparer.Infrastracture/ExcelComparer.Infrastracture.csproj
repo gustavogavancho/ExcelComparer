@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ExcelComparer.Application\ExcelComparer.Application.csproj" />
+  </ItemGroup>
+
 </Project>
