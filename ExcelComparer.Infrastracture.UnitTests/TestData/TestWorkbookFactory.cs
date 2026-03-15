@@ -2,7 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace ExcelComparer.Infrastracture.UnitTests;
+namespace ExcelComparer.Infrastructure.UnitTests;
 
 internal static class TestWorkbookFactory
 {

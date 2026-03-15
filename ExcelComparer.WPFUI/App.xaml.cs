@@ -1,4 +1,4 @@
-﻿using ExcelComparer.Infrastracture;
+﻿using ExcelComparer.Infrastructure;
 using ExcelComparer.WPFUI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

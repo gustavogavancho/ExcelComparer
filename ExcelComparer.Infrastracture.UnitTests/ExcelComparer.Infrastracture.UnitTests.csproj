@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <AssemblyName>ExcelComparer.Infrastructure.UnitTests</AssemblyName>
+    <RootNamespace>ExcelComparer.Infrastructure.UnitTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
