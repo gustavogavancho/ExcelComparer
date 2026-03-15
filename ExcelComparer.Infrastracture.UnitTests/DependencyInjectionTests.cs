@@ -1,6 +1,7 @@
 using ExcelComparer.Application.Contracts;
 using ExcelComparer.Infrastracture;
 using Microsoft.Extensions.DependencyInjection;
+using OpenXmlExcelComparer = ExcelComparer.Infrastracture.ExcelComparer;
 
 namespace ExcelComparer.Infrastracture.UnitTests;
 
@@ -16,6 +17,6 @@ public class DependencyInjectionTests
         var registration = Assert.Single(services.Where(x => x.ServiceType == typeof(IExcelComparer)));
 
         Assert.Equal(ServiceLifetime.Singleton, registration.Lifetime);
-        Assert.Equal(typeof(ExcelComparer.Infrastracture.ExcelComparer), registration.ImplementationType);
+        Assert.Equal(typeof(OpenXmlExcelComparer), registration.ImplementationType);
     }
 }

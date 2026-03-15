@@ -1,5 +1,4 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelComparer.Application.Contracts;
 using ExcelComparer.Application.Models;
@@ -376,18 +375,6 @@ public class ExcelComparer : IExcelComparer
         }
 
         return $"{ColumnIndexToName(minCol)}{minRow}:{ColumnIndexToName(maxCol)}{maxRow}";
-    }
-
-    private static ValueTask ParseAddress(string addr, out int row, out int col)
-    {
-        int i = 0;
-        while (i < addr.Length && char.IsLetter(addr[i])) i++;
-        var colStr = addr.Substring(0, i);
-        var rowStr = addr.Substring(i);
-        row = int.TryParse(rowStr, out var r) ? r : 0;
-        col = ColumnNameToIndex(colStr);
-
-        return ValueTask.CompletedTask;
     }
 
     private async ValueTask<Dictionary<string, CellInfo>> ReadCells(WorkbookPart wbPart, Worksheet ws, SharedStringTable? sst, ComparisonOptions options, Dictionary<int, string?>? nfCache)

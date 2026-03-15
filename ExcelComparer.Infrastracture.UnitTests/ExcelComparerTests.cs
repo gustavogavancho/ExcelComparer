@@ -1,4 +1,5 @@
 using ExcelComparer.Application.Models;
+using OpenXmlExcelComparer = ExcelComparer.Infrastracture.ExcelComparer;
 using static ExcelComparer.Infrastracture.UnitTests.TestWorkbookFactory;
 
 namespace ExcelComparer.Infrastracture.UnitTests;
@@ -8,7 +9,7 @@ public class ExcelComparerTests
     [Fact]
     public async Task CompareAsync_WhenWorkbookBContainsNewSheet_ShouldReturnAddedSheetDiff()
     {
-        var comparer = new ExcelComparer.Infrastracture.ExcelComparer();
+        var comparer = new OpenXmlExcelComparer();
         var fileA = CreateWorkbook(new TestSheet("Sheet1", values: new Dictionary<string, string?> { ["A1"] = "same" }));
         var fileB = CreateWorkbook(
             new TestSheet("Sheet1", values: new Dictionary<string, string?> { ["A1"] = "same" }),
@@ -33,7 +34,7 @@ public class ExcelComparerTests
     [Fact]
     public async Task CompareAsync_WhenCellValueChanges_ShouldReturnModifiedValueDiff()
     {
-        var comparer = new ExcelComparer.Infrastracture.ExcelComparer();
+        var comparer = new OpenXmlExcelComparer();
         var fileA = CreateWorkbook(new TestSheet("Sheet1", values: new Dictionary<string, string?> { ["A1"] = "old" }));
         var fileB = CreateWorkbook(new TestSheet("Sheet1", values: new Dictionary<string, string?> { ["A1"] = "new" }));
 
@@ -56,7 +57,7 @@ public class ExcelComparerTests
     [Fact]
     public async Task CompareAsync_WhenFormulaChanges_ShouldReturnModifiedFormulaDiff()
     {
-        var comparer = new ExcelComparer.Infrastracture.ExcelComparer();
+        var comparer = new OpenXmlExcelComparer();
         var fileA = CreateWorkbook(new TestSheet("Sheet1", formulas: new Dictionary<string, string?> { ["B1"] = "A1" }));
         var fileB = CreateWorkbook(new TestSheet("Sheet1", formulas: new Dictionary<string, string?> { ["B1"] = "A1+1" }));
 
@@ -79,7 +80,7 @@ public class ExcelComparerTests
     [Fact]
     public async Task CompareAsync_WhenHiddenSheetsAreExcluded_ShouldSkipHiddenSheetCellDiffs()
     {
-        var comparer = new ExcelComparer.Infrastracture.ExcelComparer();
+        var comparer = new OpenXmlExcelComparer();
         var fileA = CreateWorkbook(new TestSheet("Hidden", hidden: true, values: new Dictionary<string, string?> { ["A1"] = "old" }));
         var fileB = CreateWorkbook(new TestSheet("Hidden", hidden: true, values: new Dictionary<string, string?> { ["A1"] = "new" }));
         var options = CreateMinimalOptions();
@@ -101,7 +102,7 @@ public class ExcelComparerTests
     [Fact]
     public async Task CompareAsync_WhenCancellationRequested_ShouldThrowOperationCanceledException()
     {
-        var comparer = new ExcelComparer.Infrastracture.ExcelComparer();
+        var comparer = new OpenXmlExcelComparer();
         var fileA = CreateWorkbook(new TestSheet("Sheet1", values: new Dictionary<string, string?> { ["A1"] = "old" }));
         var fileB = CreateWorkbook(new TestSheet("Sheet1", values: new Dictionary<string, string?> { ["A1"] = "new" }));
         using var cts = new CancellationTokenSource();
@@ -122,7 +123,7 @@ public class ExcelComparerTests
     [Fact]
     public async Task CompareAsync_ShouldReportFinalProgress()
     {
-        var comparer = new ExcelComparer.Infrastracture.ExcelComparer();
+        var comparer = new OpenXmlExcelComparer();
         var fileA = CreateWorkbook(new TestSheet("Sheet1", values: new Dictionary<string, string?> { ["A1"] = "same" }));
         var fileB = CreateWorkbook(new TestSheet("Sheet1", values: new Dictionary<string, string?> { ["A1"] = "same" }));
         var updates = new List<ProgressInfo>();
