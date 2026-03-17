@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelComparer.Application.Models;
 using ExcelComparer.Domain.Entities;
 
-namespace ExcelComparer.Infrastructure;
+namespace ExcelComparer.Infrastructure.Interfaces;
 
 internal interface IOpenXmlWorkbookReader
 {

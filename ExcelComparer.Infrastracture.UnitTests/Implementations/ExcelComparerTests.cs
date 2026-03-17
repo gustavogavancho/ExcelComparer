@@ -1,5 +1,6 @@
 using ExcelComparer.Application.Models;
-using OpenXmlExcelComparer = ExcelComparer.Infrastructure.ExcelComparer;
+using ExcelComparer.Infrastructure.Implementations;
+using OpenXmlExcelComparer = ExcelComparer.Infrastructure.Implementations.ExcelComparer;
 using static ExcelComparer.Infrastructure.UnitTests.TestWorkbookFactory;
 
 namespace ExcelComparer.Infrastructure.UnitTests;

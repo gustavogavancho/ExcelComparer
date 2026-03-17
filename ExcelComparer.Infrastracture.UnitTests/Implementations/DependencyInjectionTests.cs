@@ -1,7 +1,9 @@
-using ExcelComparer.Application.Contracts;
+using ExcelComparer.Application.Interfaces;
 using ExcelComparer.Infrastructure;
+using ExcelComparer.Infrastructure.Implementations;
+using ExcelComparer.Infrastructure.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using OpenXmlExcelComparer = ExcelComparer.Infrastructure.ExcelComparer;
+using OpenXmlExcelComparer = ExcelComparer.Infrastructure.Implementations.ExcelComparer;
 
 namespace ExcelComparer.Infrastructure.UnitTests;
 

@@ -1,6 +1,6 @@
 ﻿using ExcelComparer.Application.Models;
 
-namespace ExcelComparer.Application.Contracts;
+namespace ExcelComparer.Application.Interfaces;
 
 public interface IExcelComparer
 {

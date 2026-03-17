@@ -1,9 +1,10 @@
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelComparer.Application.Models;
 using ExcelComparer.Domain.Entities;
+using ExcelComparer.Infrastructure.Interfaces;
 using System.Text;
 
-namespace ExcelComparer.Infrastructure;
+namespace ExcelComparer.Infrastructure.Implementations;
 
 internal sealed class WorksheetDiffer : IWorksheetDiffer
 {

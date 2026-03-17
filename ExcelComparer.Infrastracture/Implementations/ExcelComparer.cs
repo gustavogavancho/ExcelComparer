@@ -1,9 +1,11 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using ExcelComparer.Application.Contracts;
+using ExcelComparer.Application.Interfaces;
 using ExcelComparer.Application.Models;
+using ExcelComparer.Domain.Entities;
+using ExcelComparer.Infrastructure.Interfaces;
 
-namespace ExcelComparer.Infrastructure;
+namespace ExcelComparer.Infrastructure.Implementations;
 
 public class ExcelComparer : IExcelComparer
 {
@@ -106,11 +108,11 @@ public class ExcelComparer : IExcelComparer
     }
 
     private static bool TryGetSheetPair(
-        Domain.Entities.WorkbookInfo workbookA,
-        Domain.Entities.WorkbookInfo workbookB,
+        WorkbookInfo workbookA,
+        WorkbookInfo workbookB,
         string sheetName,
-        out Domain.Entities.SheetInfo? sheetA,
-        out Domain.Entities.SheetInfo? sheetB)
+        out SheetInfo? sheetA,
+        out SheetInfo? sheetB)
     {
         var hasA = workbookA.SheetsByName.TryGetValue(sheetName, out sheetA);
         var hasB = workbookB.SheetsByName.TryGetValue(sheetName, out sheetB);

@@ -16,7 +16,7 @@ public partial class App : System.Windows.Application
         _host = CreateHostBuilder().Build();
     }
 
-    public static IHostBuilder CreateHostBuilder(string[] args = null)
+    public static IHostBuilder CreateHostBuilder(string[]? args = null)
     {
         return Host.CreateDefaultBuilder(args)
             .ConfigureServices(services =>
@@ -31,8 +31,8 @@ public partial class App : System.Windows.Application
     {
         await _host.StartAsync();
 
-        Window window = _host.Services.GetRequiredService<MainWindow>();
-        window.Show();
+        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+        mainWindow.Show();
     }
 
     protected override async void OnExit(ExitEventArgs e)

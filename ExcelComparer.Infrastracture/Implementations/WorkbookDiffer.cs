@@ -2,9 +2,10 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelComparer.Application.Models;
 using ExcelComparer.Domain.Entities;
+using ExcelComparer.Infrastructure.Interfaces;
 using System.Globalization;
 
-namespace ExcelComparer.Infrastructure;
+namespace ExcelComparer.Infrastructure.Implementations;
 
 internal sealed class WorkbookDiffer : IWorkbookDiffer
 {

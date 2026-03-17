@@ -1,6 +1,7 @@
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelComparer.Application.Models;
 using ExcelComparer.Domain.Entities;
+using ExcelComparer.Infrastructure.Implementations;
 
 namespace ExcelComparer.Infrastructure.UnitTests;
 

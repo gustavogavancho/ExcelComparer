@@ -1,4 +1,4 @@
-﻿using ExcelComparer.Application.Contracts;
+﻿using ExcelComparer.Application.Interfaces;
 using ExcelComparer.Application.Models;
 using ExcelComparer.WPFUI.Core;
 using ExcelComparer.WPFUI.Models;
@@ -12,7 +12,6 @@ namespace ExcelComparer.WPFUI.ViewModels;
 
 public sealed class MainViewModel : ViewModelBase
 {
-
     private readonly IExcelComparer _excelComparer;
     private readonly RelayCommand _browseFileACommand;
     private readonly RelayCommand _browseFileBCommand;
@@ -175,48 +174,21 @@ public sealed class MainViewModel : ViewModelBase
         var fileA = FileA?.Trim();
         var fileB = FileB?.Trim();
 
-        if (string.IsNullOrWhiteSpace(fileA) || string.IsNullOrWhiteSpace(fileB))
+        if (!CanCompareFiles(fileA, fileB))
         {
             MessageBox.Show("Selecciona ambos archivos.", "Excel Diff", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
-        IsComparing = true;
-        StatusText = "Comparando...";
-        ProgressValue = 0;
-        Diffs.Clear();
-        SummaryItems.Clear();
-        _selectedSheetFilter = null;
-        SelectedSummaryItem = null;
-
+        PrepareForComparison();
         _cts = new CancellationTokenSource();
-
-        var options = new ComparisonOptions
-        {
-            CompareValues = CompareValues,
-            CompareFormulas = CompareFormulas,
-            IncludeHiddenSheets = IncludeHiddenSheets
-        };
-
-        var progress = new Progress<ProgressInfo>(p =>
-        {
-            ProgressValue = p.Percent;
-            StatusText = p.Message;
-        });
+        var options = CreateComparisonOptions();
+        var progress = CreateProgressReporter();
 
         try
         {
-            var result = await _excelComparer.CompareAsync(fileA, fileB, options, progress, _cts.Token);
-
-            foreach (var diff in result.Diffs)
-            {
-                Diffs.Add(diff);
-            }
-
-            SummaryItems.Add(BuildSummaryTree(result));
-
-            StatusText = $"Listo. Cambios: {Diffs.Count}";
-            ProgressValue = 100;
+            var result = await RunComparisonAsync(fileA!, fileB!, options, progress, _cts.Token);
+            ShowComparisonResult(result);
         }
         catch (OperationCanceledException)
         {
@@ -233,6 +205,57 @@ public sealed class MainViewModel : ViewModelBase
             _cts?.Dispose();
             _cts = null;
         }
+    }
+
+    private static bool CanCompareFiles(string? fileA, string? fileB)
+        => !string.IsNullOrWhiteSpace(fileA) && !string.IsNullOrWhiteSpace(fileB);
+
+    private Task<ComparisonResult> RunComparisonAsync(
+        string fileA,
+        string fileB,
+        ComparisonOptions options,
+        IProgress<ProgressInfo> progress,
+        CancellationToken cancellationToken)
+        => Task.Run(
+            async () => await _excelComparer.CompareAsync(fileA, fileB, options, progress, cancellationToken),
+            cancellationToken);
+
+    private void PrepareForComparison()
+    {
+        IsComparing = true;
+        StatusText = "Comparando...";
+        ProgressValue = 0;
+        Diffs.Clear();
+        SummaryItems.Clear();
+        _selectedSheetFilter = null;
+        SelectedSummaryItem = null;
+    }
+
+    private ComparisonOptions CreateComparisonOptions()
+        => new()
+        {
+            CompareValues = CompareValues,
+            CompareFormulas = CompareFormulas,
+            IncludeHiddenSheets = IncludeHiddenSheets
+        };
+
+    private IProgress<ProgressInfo> CreateProgressReporter()
+        => new Progress<ProgressInfo>(update =>
+        {
+            ProgressValue = update.Percent;
+            StatusText = update.Message;
+        });
+
+    private void ShowComparisonResult(ComparisonResult result)
+    {
+        foreach (var diff in result.Diffs)
+        {
+            Diffs.Add(diff);
+        }
+
+        SummaryItems.Add(BuildSummaryTree(result));
+        StatusText = $"Listo. Cambios: {Diffs.Count}";
+        ProgressValue = 100;
     }
 
     private void CancelComparison()

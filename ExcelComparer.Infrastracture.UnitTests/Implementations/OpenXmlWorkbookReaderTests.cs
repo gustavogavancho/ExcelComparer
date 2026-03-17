@@ -1,4 +1,5 @@
 using DocumentFormat.OpenXml.Packaging;
+using ExcelComparer.Infrastructure.Implementations;
 using static ExcelComparer.Infrastructure.UnitTests.TestWorkbookFactory;
 
 namespace ExcelComparer.Infrastructure.UnitTests;
